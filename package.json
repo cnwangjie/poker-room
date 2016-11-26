@@ -1,0 +1,27 @@
+{
+  "name": "poker",
+  "version": "1.0.0",
+  "description": "A socket base customize poker.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cnwangjie/poker.git"
+  },
+  "keywords": [
+    "poker",
+    "socket"
+  ],
+  "author": "cnwangjie",
+  "license": "apache",
+  "bugs": {
+    "url": "https://github.com/cnwangjie/poker/issues"
+  },
+  "homepage": "https://github.com/cnwangjie/poker#readme",
+  "dependencies": {
+    "express": "^4.14.0",
+    "socketio": "^1.0.0"
+  }
+}
