@@ -14,23 +14,63 @@
     <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
+    .footer {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      /* Set the fixed height of the footer here */
+      height: 60px;
+    }
+    body {
+      height: auto;
+      background-color: #000;
+    }
+    .container {
+      width: auto;
+      max-width: 680px;
+      padding: 0;
+      height: 100%;
+    }
+    .container .text-muted {
+      margin: 12px 0;
+    }
+    #content {
+      height: 100%
+    }
+    #content ul {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      list-style-type: none
+    }
+    #content li {
+      font-size: 18px;
+      color: #fff;
+    }
+
     </style>
   </head>
 
   <body>
     <div class="container">
-      <div class="raw">
+      <div id="content">
+        <ul>
+          <li>
+            <span style="color:green">player0</span> @ <span style="color:#aaa">asd</span>
+          </li>
+          <li>
+            player0 @ asd
+          </li>
+        </ul>
+
       </div>
     </div>
 
-    <script>
-      socket = io.connect('http://localhost:3000');
-
-      socket.om('open', function() {
-
-      });
-    </script>
-
+    <div class="footer">
+      <div class="container">
+        <input type="text" class="form-control text-muted">
+      </div>
+    </div>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
@@ -38,5 +78,28 @@
     <script src="//cdn.bootcss.com/jquery/1.11.3/jquery.min.js"></script>
     <script src="//cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
     <script src="//cdn.bootcss.com/socket.io/1.6.0/socket.io.min.js"></script>
+
+    <script>
+      var socket = io.connect('http://localhost:3000');
+
+      socket.on('open', function(obj) {
+        $('ul').append('<li><span style="color:red">socket connected!</span><li>');
+      });
+
+      socket.on('message', function(obj) {
+        $('ul').append('<li><span style="color:' + obj.speaker.color + '">' + obj.speaker.name + '</span> : <span style="color:' + obj.msg.color'">' + obj.msg.content + '</span><li>');
+      });
+
+      $('input').keydown(function() {
+        if (event.which == 13) {
+          var msg = $(this).val();
+          if (msg == '') {
+            return;
+          }
+          socket.send(msg);
+          $(this).val('');
+        }
+      })
+    </script>
   </body>
 </html>
