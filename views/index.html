@@ -55,6 +55,8 @@
     <script>
       var socket = io.connect('http://localhost:3000');
       var user = false;
+      var localHistory = [];
+      var now = 0;
 
 
       socket.on('connect', function() {
@@ -70,7 +72,6 @@
       socket.on('message', function(json) {
         console.log(json)
         $('#content').prepend('<p>'+json.speaker+': '+json.msg+'<p>');
-        $('#content p:first-child').addClass('text-'+json.status);
       });
 
       socket.on('system', function(json) {
@@ -87,7 +88,11 @@
 
       $('input').keydown(function() {
         if (event.which == 13) {
+          // enter
           var input = $(this).val();
+          localHistory.push(input);
+          now = localHistory.length;
+          $(this).val('');
           if (input == '') {
             return;
           }
@@ -101,9 +106,34 @@
           } else {
             var params = input.substr(1).split(' ');
             json.method = params.shift();
-            json.param = params;          }
-          socket.send(json);
-          $(this).val('');
+            json.param = params;
+          }
+          // client method
+          switch (json.method) {
+            case 'clear':
+              $(this).text('');
+              break;
+
+            case 'history':
+              for (var i = 0;i < localHistory.length;i++) {
+                $('#content').prepend('<p>'+i+' '+localHistory[i]+'</p>');
+              }
+              break;
+            default:
+              socket.send(json);
+          }
+        } else if (event.which == 38) {
+          // up arrow
+          if (now == 0) {
+            return;
+          }
+          $(this).val(localHistory[--now]);
+        } else if (event.which == 40) {
+          // down arrow
+          if (now == localHistory.length) {
+            return;
+          }
+          $(this).val(localHistory[++now]);
         }
       })
     </script>
